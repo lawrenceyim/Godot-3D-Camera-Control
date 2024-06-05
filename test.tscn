@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://dnfl6qygjpwk"]
+
+[ext_resource type="Script" path="res://Camera3D.cs" id="1_rd2ou"]
+[ext_resource type="Texture2D" uid="uid://xdwkj1q7r80s" path="res://icon.svg" id="1_ub5kp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4rcjh"]
+albedo_texture = ExtResource("1_ub5kp")
+
+[sub_resource type="BoxMesh" id="BoxMesh_5iui5"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_4rcjh")
+mesh = SubResource("BoxMesh_5iui5")
+
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("box")]
+transform = Transform3D(1, -6.97574e-16, 4.15924e-24, 4.15924e-24, 1.19249e-08, 1, -6.97574e-16, -1, 1.19249e-08, 2.08165e-12, 10, 2.08165e-12)
+script = ExtResource("1_rd2ou")
+box = NodePath("../MeshInstance3D")
