@@ -1,8 +1,17 @@
 using Godot;
 using System;
 
+public enum CameraControlButton {
+	RotateUp = 0,
+	RotateLeft = 1,
+	RotateDown = 2,
+	RotateRight = 3,
+}
+
 public partial class Camera3D : Godot.Camera3D
 {
+	public event EventHandler<(CameraControlButton, bool)> ButtonPressed;
+
 	[Export] private Node3D box;
 	private float radius = 0f;
 	private float angle = 0f;
@@ -19,21 +28,36 @@ public partial class Camera3D : Godot.Camera3D
 
 	public override void _Process(double delta)
 	{
-		if (Input.IsActionPressed("RotateLeft")) {
+		if (Input.IsActionPressed(CameraControlButton.RotateLeft.ToString())) {
 			RotateSideWay((float) -delta);
+			ButtonPressed?.Invoke(this, (CameraControlButton.RotateLeft, true));
+		} else if (Input.IsActionJustReleased(CameraControlButton.RotateLeft.ToString())) {
+			ButtonPressed?.Invoke(this, (CameraControlButton.RotateLeft, false));
 		}
-		if (Input.IsActionPressed("RotateRight")) {
+
+		if (Input.IsActionPressed(CameraControlButton.RotateRight.ToString())) {
 			RotateSideWay((float) delta);
+			ButtonPressed?.Invoke(this, (CameraControlButton.RotateRight, true));
+		} else {
+			ButtonPressed?.Invoke(this, (CameraControlButton.RotateRight, false));
 		}
-		if (Input.IsActionPressed("RotateUp")) {
+
+		if (Input.IsActionPressed(CameraControlButton.RotateUp.ToString())) {
 			RotateVertical((float) delta);
-		}
-		if (Input.IsActionPressed("RotateDown")) {
+			ButtonPressed?.Invoke(this, (CameraControlButton.RotateUp, true));
+		} else {
+			ButtonPressed?.Invoke(this, (CameraControlButton.RotateUp, false));
+		} 
+
+		if (Input.IsActionPressed(CameraControlButton.RotateDown.ToString())) {
 			RotateVertical((float) -delta);
+			ButtonPressed?.Invoke(this, (CameraControlButton.RotateDown, true));
+		} else {
+			ButtonPressed?.Invoke(this, (CameraControlButton.RotateDown, false));
 		}
 	}
 
-	public void RotateSideWay(float delta) {
+	private void RotateSideWay(float delta) {
 		angle += sideRotationSpeed * delta;
 		if (angle > 2 * Mathf.Pi)
 		{
@@ -43,7 +67,7 @@ public partial class Camera3D : Godot.Camera3D
 		UpdateCameraPosition();
 	} 
 
-	public void RotateVertical(float delta) {
+	private void RotateVertical(float delta) {
 		height += verticalRotationSpeed * delta;
 		radius -= verticalRotationSpeed * delta;
 	
